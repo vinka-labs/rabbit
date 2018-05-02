@@ -1,0 +1,22 @@
+{
+  "name": "@vinka/rabbit",
+  "version": "1.0.0",
+  "description": "Rabbit connection",
+  "main": "index.js",
+  "scripts": {
+    "test": "lab -v -P test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vinka-labs/rabbit.git"
+  },
+  "author": "Vinka",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vinka-labs/rabbit/issues"
+  },
+  "homepage": "https://github.com/vinka-labs/rabbit#readme",
+  "dependencies": {
+    "amqplib": "^0.5.2"
+  }
+}
