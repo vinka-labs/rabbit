@@ -11,6 +11,7 @@ const QUEUE_SUFFIX = process.env.QUEUE  ? `-${process.env.QUEUE}` : '';
 const AUTODEL = process.env.AUTODEL === '1';
 const EXCLUSIVE = process.env.EXCLUSIVE === '1';
 const ACK = process.env.ACK === '1';
+const EXCHANGE = process.env.EXCHANGE || 'jediex';
 
 const options = {
     queue: 'jeditest' + QUEUE_SUFFIX,
@@ -43,7 +44,7 @@ async function connect() {
 
     const rabbit = new Connection('amqp://localhost');
     await rabbit.connect();
-    const consumer = new Consumer(rabbit, 'jeditest', options);
+    const consumer = new Consumer(rabbit, EXCHANGE, options);
     consumer.on('msg', gotMilk);
     await consumer.listen();
 };
