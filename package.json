@@ -1,6 +1,6 @@
 {
   "name": "@vinka/rabbit",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Rabbit connection",
   "main": "index.js",
   "scripts": {
