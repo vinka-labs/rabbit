@@ -18,7 +18,7 @@ class RabbitConnection extends EventEmitter {
     /**
      * @param url {String} - the URL of the RabbitMQ server.
      * @param [options] {Object} - options.
-     * @param [options.log=console] {Object} - logger.
+     * @param [options.logger=console] {Object} - logger.
      */
     constructor(url, options={}) {
         super();
@@ -58,6 +58,10 @@ class RabbitConnection extends EventEmitter {
         const ch = await this.connection.createChannel();
         await ch.deleteQueue(name);
         await ch.close();
+    }
+
+    async reconnect() {
+        return this._reconnect();
     }
 
     async _onConnectionError(err) {
