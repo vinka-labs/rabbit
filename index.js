@@ -10,7 +10,7 @@ const assert = require('assert');
 const amqp = require('amqplib/channel_api');
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const marshal = obj => new Buffer(JSON.stringify(obj));
+const marshal = obj => Buffer.from(JSON.stringify(obj));
 const unmarshal = data => JSON.parse(data.toString());
 
 class RabbitConnection extends EventEmitter {
