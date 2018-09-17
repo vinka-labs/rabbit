@@ -25,6 +25,7 @@ class RabbitConnection extends EventEmitter {
         assert(url, 'rabbit URL must be given');
         this.url = url;
         this.connection = null;
+        this.reconnecting = false;
         this.log = options.logger || console;
     }
 
@@ -74,12 +75,20 @@ class RabbitConnection extends EventEmitter {
     }
 
     async _reconnect() {
+        if (this.reconnecting) {
+            return;
+        }
+        this.reconnecting = true;
         await this.disconnect();
         try {
             await this.connect();
+            this.reconnecting = false;
         } catch (err) {
             this.log.error('unable to reconnect to amqp: ' + err);
-            setTimeout(this._reconnect.bind(this), 3000);
+            setTimeout(() => {
+                this.reconnecting = false;
+                this._reconnect();
+            }, 3000);
         }
     }
 }
@@ -161,6 +170,9 @@ class RabbitConsumer extends EventEmitter {
         };
 
         const onChannelClose = msg => {
+            // If rabbit server goes down,
+            // the only way we notice the outage is that channel is closed
+            this.rabbit.reconnect();
             this.log.info(`${this.exchangeName} channel closed: ` + msg);
         };
 
@@ -184,10 +196,10 @@ class RabbitConsumer extends EventEmitter {
             this.channel = null;
             this.log.debug(`${this.exchangeName} closing channel...`);
             try {
-                channel.close();
+                await channel.close();
                 this.log.info(`${this.exchangeName} channel closed`);
             } catch (e) {
-                this.log.error(`${this.exchangeName} unable to close channel: ` + err);
+                this.log.error(`${this.exchangeName} unable to close channel: ` + e.message);
             }
         }
     }
@@ -248,10 +260,17 @@ class RabbitProducer extends EventEmitter {
             this.log.error(`channel error on "${name}" ` + err);
             this._reconnect();
         }
+        const onChannelClose = msg => {
+            // If rabbit server goes down,
+            // the only way we notice the outage is that channel is closed
+            this.rabbit.reconnect();
+            this.log.info(`${this.exchangeName} channel closed: ` + msg);
+        };
 
         const ch = await this.rabbit.connection.createChannel();
         ch.assertExchange(this.exchangeName, 'topic', {durable: false});
         ch.on('error', onChannelError);
+        ch.on('close', onChannelClose);
         this.channel = ch;
         this.log.info(`ready to send events to exchange "${this.exchangeName}"`);
     }
