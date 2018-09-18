@@ -137,7 +137,7 @@ class RabbitConsumer extends EventEmitter {
             this._reconnect();
         });
 
-        this.rabbit.on('disconnect', () => {
+        this.rabbit.on('disconnected', () => {
             this._close();
         });
 
