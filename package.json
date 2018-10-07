@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/vinka-labs/rabbit#readme",
   "dependencies": {
-    "amqplib": "^0.5.2"
+    "amqplib": "^0.5.2",
+    "uuid": "^3.3.2"
   }
 }

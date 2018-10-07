@@ -34,6 +34,7 @@ async function operate() {
     }
 
     setTimeout(async () => {
+        console.log('========================================================== END');
         await rabbit.connection.close();
     }, 1000);
 }

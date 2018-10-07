@@ -3,15 +3,18 @@
 //  created: 2018-04-18 00:48:36
 //
 
-const {Connection, Consumer} = require('..');
+const {
+    Connection,
+    Consumer
+} = require('..');
 
 console.debug = (msg) => console.log(msg);
 
-const QUEUE_SUFFIX = process.env.QUEUE  ? `-${process.env.QUEUE}` : '';
+const QUEUE_SUFFIX = process.env.QUEUE ? `-${process.env.QUEUE}` : '';
 const AUTODEL = process.env.AUTODEL === '1';
 const EXCLUSIVE = process.env.EXCLUSIVE === '1';
 const ACK = process.env.ACK === '1';
-const EXCHANGE = process.env.EXCHANGE || 'jediex';
+const EXCHANGE = process.env.EXCHANGE || 'es_events';
 
 const options = {
     queue: 'jeditest' + QUEUE_SUFFIX,
@@ -19,7 +22,7 @@ const options = {
     autoDelete: AUTODEL,
     exclusive: EXCLUSIVE,
     ack: ACK,
-    keys: ['foo.*', 'bar'],
+    keys: ['trip.*', 'route.*'],
 };
 
 console.log('## queue options:');
@@ -27,7 +30,8 @@ console.log(JSON.stringify(options, null, '  '));
 
 async function connect() {
     const gotMilk = (key, payload, msg) => {
-        console.log('got', payload, 'from', key);
+        console.log('====================================================================================');
+        console.log(JSON.stringify(payload, null, '  '));
         if (!ACK) {
             return;
         }
