@@ -50,7 +50,7 @@ async function connect() {
     await rabbit.connect();
     const consumer = new Consumer(rabbit, EXCHANGE, options);
     consumer.on('msg', gotMilk);
-    await consumer.listen();
+    await consumer.init();
 };
 
 connect().then(() => console.log('connected'));

@@ -14,24 +14,28 @@ const options = {
     prefetchCount: 3,
 };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const sleeprand = () => sleep(Math.random() * 1000 + 1000);
+const sleeprand = () => sleep(Math.random() * 1000 + 5000);
 
-const evalService = async (msg) => {
-    console.log('====================================================================================');
-    console.log(`processing "${msg}"...`);
-    await sleeprand();
-    try {
-        return eval(msg);
-    } catch (e) {
-        return {_error: e.message};
-    }
+const operations = {
+    eval: async (msg) => {
+        console.log('====================================================================================');
+        console.log(`processing "${msg}"... ${typeof msg}`);
+        await sleeprand();
+        try {
+            const result = eval(msg);
+            console.log('result: ' + msg);
+            return result;
+        } catch (e) {
+            return {_error: e.message};
+        }
+    },
 }
 
 async function connect() {
     const rabbit = new Connection('amqp://localhost');
     await rabbit.connect();
-    const consumer = new RpcServer(rabbit, evalService, options);
-    await consumer.init()
+    const server = new RpcServer(rabbit, operations, options);
+    await server.init()
 };
 
 connect().then(() => {
