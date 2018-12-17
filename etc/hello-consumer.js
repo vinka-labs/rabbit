@@ -32,6 +32,7 @@ async function connect() {
     const gotMilk = (key, payload, msg) => {
         console.log('====================================================================================');
         console.log(JSON.stringify(payload, null, '  '));
+        // console.log(`got ${key}`);
         if (!ACK) {
             return;
         }
