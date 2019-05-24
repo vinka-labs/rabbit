@@ -33,7 +33,8 @@ async function operate() {
         return (async () => {
             try {
                 console.log(`sending ${msg}...`);
-                const result = await rpc.rpc('eval', msg);
+                const result = await rpc.exec('eval', [msg], {timeout: 40000});
+                // const result = await rpc.rpc('eval', msg);
                 console.log(`sent ${msg} to ${key} -> ${result} expected: ${result === eval(msg)}`);
             } catch (e) {
                 console.log(`sent ${msg} to ${key} -> failed: ${e.message}`);
