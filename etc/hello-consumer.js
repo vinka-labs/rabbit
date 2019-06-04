@@ -23,6 +23,7 @@ const options = {
     exclusive: EXCLUSIVE,
     ack: ACK,
     keys: ['trip.*', 'route.*'],
+    // createExchange: true
 };
 
 console.log('## queue options:');
